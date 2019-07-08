@@ -29,7 +29,10 @@ or implied, of Rafael Muñoz Salinas.
 #include "posetracker.h"
 #include "ippe.h"
 #include <set>
+#if  CV_MAJOR_VERSION < 3
 #include "levmarq.h"
+#else
+#endif
 #include <opencv2/calib3d/calib3d.hpp>
 namespace aruco
 {
@@ -261,6 +264,8 @@ inline double hubberMono(double e){
 inline double getHubberMonoWeight(double SqErr,double Information){
      return sqrt(hubberMono(Information * SqErr)/ SqErr);
 }
+#if  CV_MAJOR_VERSION < 3
+
     template <typename T>
     double __aruco_solve_pnp(const std::vector<cv::Point3f>& p3d, const std::vector<cv::Point2f>& p2d,
                              const cv::Mat& cam_matrix, const cv::Mat& dist, cv::Mat& r_io, cv::Mat& t_io)
@@ -327,14 +332,19 @@ inline double getHubberMonoWeight(double SqErr,double Information){
         fromSol(sol, r_io, t_io);
         return err;
     }
-
+#endif
     double __aruco_solve_pnp(const std::vector<cv::Point3f>& p3d, const std::vector<cv::Point2f>& p2d,
                              const cv::Mat& cam_matrix, const cv::Mat& dist, cv::Mat& r_io, cv::Mat& t_io)
     {
+        #if  CV_MAJOR_VERSION >= 3
+
+        return cv::solvePnP(p3d,p2d,cam_matrix,dist,r_io,t_io);
+#else
 #ifdef DOUBLE_PRECISION_PNP
         return __aruco_solve_pnp<double>(p3d, p2d, cam_matrix, dist, r_io, t_io);
 #else
         return __aruco_solve_pnp<float>(p3d, p2d, cam_matrix, dist, r_io, t_io);
+#endif
 #endif
     }
 
@@ -347,11 +357,6 @@ inline double getHubberMonoWeight(double SqErr,double Information){
             auto solutions =  solvePnP_(Marker::get3DPoints(_msize), m, _cam_params.CameraMatrix, _cam_params.Distorsion);
             double errorRatio = solutions[1].second / solutions[0].second;
             if (errorRatio < minerrorRatio)
-                return false;  // is te error ratio big enough
-//            cv::solvePnP(Marker::get3DPoints(_msize), m, _cam_params.CameraMatrix, _cam_params.Distorsion, rv, tv);
-            //__aruco_solve_pnp(Marker::get3DPoints(_msize), m, _cam_params.CameraMatrix, _cam_params.Distorsion, _rvec,  _tvec);
-//            rv.convertTo(_rvec, CV_32F);
-//            tv.convertTo(_tvec, CV_32F);
             aruco_private::impl__aruco_getRTfromMatrix44(solutions[0].first, _rvec, _tvec);
         }
         else

@@ -1,4 +1,5 @@
-aruco
-=================
+# ArUco
 
-Aruco library(3.0.9) for calibrating our camera extrinsic parameters.
+ArUco library(3.1.2) for calibrating our camera extrinsic parameters.
+
+Fork from https://sourceforge.net/projects/aruco
