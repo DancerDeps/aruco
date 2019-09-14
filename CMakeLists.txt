@@ -16,16 +16,10 @@ include(cmake/findDependencies.cmake)
 include(cmake/compilerOptions.cmake)
 
 # catkin support
-find_package(catkin REQUIRED)
-catkin_package(
-  INCLUDE_DIRS src
-  LIBRARIES aruco
-#  CATKIN_DEPENDS other_catkin_pkg
-#  DEPENDS system_lib
-)
+find_package(ament_cmake REQUIRED)
 include_directories(src)
-OPTION(BUILD_UTILS  "Set to OFF to not compile utils " OFF)
-OPTION(BUILD_TESTS  "Set to OFF to not compile tests " OFF)
+OPTION(BUILD_UTILS  "Set to OFF to not compile utils " ON)
+OPTION(BUILD_TESTS  "Set to OFF to not compile tests " ON)
 
 add_definitions(-DUSE_SVM_LABELER)
 add_subdirectory(src)
@@ -47,3 +41,5 @@ endif()
 include(cmake/printInfo.cmake)
 include(cmake/installOptions.cmake)
 
+ament_package(
+)
