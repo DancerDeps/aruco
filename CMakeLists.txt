@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #   Basic Configuration
 # ----------------------------------------------------------------------------
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.3)
 project(aruco VERSION "3.0.9" LANGUAGES CXX)
 
 set(PROJECT_SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
@@ -15,7 +15,7 @@ include(cmake/options.cmake)
 include(cmake/findDependencies.cmake)
 include(cmake/compilerOptions.cmake)
 
-# catkin support
+# ament support
 find_package(ament_cmake REQUIRED)
 include_directories(src)
 OPTION(BUILD_UTILS  "Set to OFF to not compile utils " ON)
@@ -41,5 +41,4 @@ endif()
 include(cmake/printInfo.cmake)
 include(cmake/installOptions.cmake)
 
-ament_package(
-)
+ament_package()
